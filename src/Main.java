@@ -14,8 +14,10 @@ public class Main extends JFrame
     display.setEditable(false);
     c.add(display, BorderLayout.NORTH);
 
-    SchoolPanel board = new SchoolPanel();
-    c.add(board, BorderLayout.CENTER);
+    SchoolPanel schoolPanel = new SchoolPanel();
+    c.add(schoolPanel, BorderLayout.CENTER);
+    
+    School school = new School(schoolPanel);
 
     display.setText(" Click on two locations in EYHS to see the shortest path between them.");
   }

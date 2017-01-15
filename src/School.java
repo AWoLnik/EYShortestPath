@@ -60,6 +60,7 @@ public class School extends CharMatrix
   public void makeSelection(int row, int col)
   {
     setCharAt(row, col, 'o');
+    school.setDisplayCount(0);
     school.update(this);
   }
 }
