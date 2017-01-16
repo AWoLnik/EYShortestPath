@@ -71,8 +71,8 @@ public class School extends CharMatrix
     
     if (selected.size() == 2) {
     	goal = selected.get(0);
-    	Location[] a = new Location[0];
-    	Location[] shortestPath = computeShortestPath(l, l, a);
+    	ArrayList<Location> a = new ArrayList<Location>();
+    	ArrayList<Location> shortestPath = computeShortestPath(l, l, a);
     	for (Location p: shortestPath)
     		setCharAt(p.getRow(), p.getCol(), 'p');
     	school.update(this);
@@ -81,12 +81,12 @@ public class School extends CharMatrix
   
   // Location l is the location to analyze, Location p is the previous location
   // (which is to be avoided), and Location[] a is the path being built out
-  private Location[] computeShortestPath(Location l, Location p, Location [] a)
+  private ArrayList<Location> computeShortestPath(Location l, Location p, ArrayList<Location> a)
   {
 	  if (goal == l)
 		  return a;
 	  else {
-		  ArrayList<Location[]> paths = new ArrayList<Location[]>();
+		  ArrayList<ArrayList<Location>> paths = new ArrayList<ArrayList<Location>>();
 		  
 		  // check North
 		  Location n = new Location(l.getRow()-1, l.getCol());
@@ -108,15 +108,16 @@ public class School extends CharMatrix
 		  if (w != p && !isEmpty(w.getRow(), w.getCol()))
 				  paths.add(computeShortestPath(w, l, a));
 		  
-		  int shortestLength = paths.get(0).length;
+		  int shortestLength = paths.get(0).size();
 		  int shortestPath = 0;
 		  
 		  for (int i = 0; i < paths.size(); i++)
-			  if (paths.get(i).length < shortestLength) {
-				  shortestLength = paths.get(i).length;
+			  if (paths.get(i).size() < shortestLength) {
+				  shortestLength = paths.get(i).size();
 				  shortestPath = i;
 			  }
 		  
+		  paths.get(shortestPath).add(l);
 		  return paths.get(shortestPath);
 	  }
   }
