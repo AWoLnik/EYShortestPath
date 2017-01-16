@@ -18,6 +18,8 @@ public class Main extends JFrame
     c.add(schoolPanel, BorderLayout.CENTER);
     
     School school = new School(schoolPanel);
+    
+    User user = new User(this, school, schoolPanel);
 
     display.setText(" Click on two locations in EYHS to see the shortest path between them.");
   }

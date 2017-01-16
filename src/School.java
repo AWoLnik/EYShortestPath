@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+
 public class School extends CharMatrix
 {
   private SchoolPanel school;
+  private ArrayList<Location> selected;
+  private Location goal;
 
   public School(SchoolPanel school)
   {
@@ -33,6 +37,8 @@ public class School extends CharMatrix
     setCharAt(6, 17, 's');
     
     school.update(this);
+    
+    selected = new ArrayList<Location>();
   }
 
   /*
@@ -46,21 +52,72 @@ public class School extends CharMatrix
   }
 
   /*
-   * Returns true if the location on the school is a win
-   * for the player whose turn is to move
-   */
-  public boolean isWon()
-  {
-    return isEmpty(0, 0);
-  }
-
-  /*
    * Adjusts and repaints the school after the move at row, col
    */
   public void makeSelection(int row, int col)
   {
-    setCharAt(row, col, 'o');
-    school.setDisplayCount(0);
+	Location l = new Location(row, col);
+	
+	if (charAt(row, col) == 'o') {
+		setCharAt(row, col, 'x');
+		if (selected.contains(l))
+			selected.remove(l);
+	}
+	else if (selected.size() < 2){
+		setCharAt(row, col, 'o');
+		selected.add(l);
+	}
     school.update(this);
+    
+    if (selected.size() == 2) {
+    	goal = selected.get(0);
+    	Location[] a = new Location[0];
+    	Location[] shortestPath = computeShortestPath(l, l, a);
+    	for (Location p: shortestPath)
+    		setCharAt(p.getRow(), p.getCol(), 'p');
+    	school.update(this);
+    }
+  }
+  
+  // Location l is the location to analyze, Location p is the previous location
+  // (which is to be avoided), and Location[] a is the path being built out
+  private Location[] computeShortestPath(Location l, Location p, Location [] a)
+  {
+	  if (goal == l)
+		  return a;
+	  else {
+		  ArrayList<Location[]> paths = new ArrayList<Location[]>();
+		  
+		  // check North
+		  Location n = new Location(l.getRow()-1, l.getCol());
+		  if (n != p && !isEmpty(n.getRow(), n.getCol()))
+				  paths.add(computeShortestPath(n, l, a));
+		  
+		  // check East
+		  Location e = new Location(l.getRow(), l.getCol()+1);
+		  if (e != p && !isEmpty(e.getRow(), e.getCol()))
+				  paths.add(computeShortestPath(e, l, a));
+		  
+		  // check South
+		  Location s = new Location(l.getRow()+1, l.getCol());
+		  if (s != p && !isEmpty(s.getRow(), s.getCol()))
+				  paths.add(computeShortestPath(s, l, a));
+		  
+		  // check West
+		  Location w = new Location(l.getRow(), l.getCol()-1);
+		  if (w != p && !isEmpty(w.getRow(), w.getCol()))
+				  paths.add(computeShortestPath(w, l, a));
+		  
+		  int shortestLength = paths.get(0).length;
+		  int shortestPath = 0;
+		  
+		  for (int i = 0; i < paths.size(); i++)
+			  if (paths.get(i).length < shortestLength) {
+				  shortestLength = paths.get(i).length;
+				  shortestPath = i;
+			  }
+		  
+		  return paths.get(shortestPath);
+	  }
   }
 }

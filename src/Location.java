@@ -17,4 +17,14 @@ public class Location
   {
     return col;
   }
+  
+  @Override
+  public boolean equals(Object x) {
+	  Location l = (Location) x;
+
+	  if (l.getRow() == row && l.getCol() == col)
+		  return true;
+	  else
+		  return false;
+  }
 }

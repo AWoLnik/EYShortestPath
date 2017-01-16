@@ -3,11 +3,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class SchoolPanel extends JPanel
 {
   private final int ROWS = 9, COLS = 18;   // board dimensions
   private final int CELLSIZE = 40;
-  private int displayCount;
 
   // Constructor
   public SchoolPanel()
@@ -34,12 +34,6 @@ public class SchoolPanel extends JPanel
   {
     return new Location(y / CELLSIZE, x / CELLSIZE);
   }
-
-//Sets count for visual feedback, e.g. flashing the changed squares
- public void setDisplayCount(int count)
- {
-   displayCount = count;
- }
   
   private School school;
 
@@ -71,6 +65,8 @@ public class SchoolPanel extends JPanel
         	color = Color.GRAY;
         else if (school.charAt(r, c) == 'o')
         	color = Color.YELLOW;
+        else if (school.charAt(r, c) == 'p')
+        	color = Color.BLUE;
         else
           color = Color.WHITE;
         g.setColor(color);
@@ -82,8 +78,5 @@ public class SchoolPanel extends JPanel
         g.drawRect(x+1, y+1, CELLSIZE-2, CELLSIZE-2);
       }
     }
-    
-    if (displayCount > 0)
-        displayCount--;
   }
 }
