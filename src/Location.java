@@ -27,4 +27,13 @@ public class Location
 	  else
 		  return false;
   }
+  
+  @Override
+  public String toString() {
+	  return "("+row+","+col+")";
+  }
+  
+  public int hashCode() {
+	  return toString().hashCode();
+  }
 }

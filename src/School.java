@@ -1,4 +1,7 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class School extends CharMatrix
 {
@@ -71,13 +74,89 @@ public class School extends CharMatrix
     
     if (selected.size() == 2) {
     	goal = selected.get(0);
-    	ArrayList<Location> path = new ArrayList<Location>();
-    	ArrayList<Location> visitedNodes = new ArrayList<Location>();
-    	ArrayList<Location> shortestPath = computeShortestPath(l, l, path, visitedNodes);
-    	for (Location p: shortestPath)
-    		setCharAt(p.getRow(), p.getCol(), 'p');
+    	ArrayList<Location> shortestPath = andrewsCoolShortestPath(l, goal); //computeShortestPath(l, l, path, visitedNodes);
+    	for (int i = 1; i < shortestPath.size(); i++)
+    		setCharAt(shortestPath.get(i).getRow(), shortestPath.get(i).getCol(), 'p');
     	school.update(this);
     }
+  }
+  
+  
+  private ArrayList<Location> andrewsCoolShortestPath(Location start, Location end) {
+
+	  HashMap<Location, Boolean> marked = new HashMap<>();
+	  HashMap<Location, Location> edgeTo = new HashMap<>();
+	  HashMap<Location, Integer> distTo = new HashMap<>();
+	  ArrayDeque<Location> queue = new ArrayDeque<>();
+	  
+	  distTo.put(start, 0);
+	  marked.put(start, true);
+	  queue.offer(start);
+	  	  
+	  while ( !queue.isEmpty() ) {
+		  Location n = queue.poll();
+		  
+		  if (!isEmpty(n.getRow()-1, n.getCol())) {
+			  Location w = new Location(n.getRow()-1, n.getCol());
+			  if ( marked.get(w) == null ) {	  
+				  edgeTo.put(w, n);
+				  distTo.put(w, distTo.get(n)+1);
+				  marked.put(w, true);
+				  queue.offer(w);
+			  }
+		  }
+
+		  if (!isEmpty(n.getRow()+1, n.getCol())) {
+			  Location w = new Location(n.getRow()+1, n.getCol());
+			  if ( marked.get(w) == null ) {	  
+				  edgeTo.put(w, n);
+				  distTo.put(w, distTo.get(n)+1);
+				  marked.put(w, true);
+				  queue.offer(w);
+			  }
+		  }
+		  
+		  if (!isEmpty(n.getRow(), n.getCol()+1)) {
+			  Location w = new Location(n.getRow(), n.getCol()+1);
+			  if ( marked.get(w) == null ) {	  
+				  edgeTo.put(w, n);
+				  distTo.put(w, distTo.get(n)+1);
+				  marked.put(w, true);
+				  queue.offer(w);
+			  }
+		  }
+		  
+		  if (!isEmpty(n.getRow(), n.getCol()-1)) {
+			  Location w = new Location(n.getRow(), n.getCol()-1);
+			  if ( marked.get(w) == null ) {	  
+				  edgeTo.put(w, n);
+				  distTo.put(w, distTo.get(n)+1);
+				  marked.put(w, true);
+				  queue.offer(w);
+			  }
+		  }
+	  }
+	  
+	  Iterator<Location>it  = marked.keySet().iterator();
+	  //while (it.hasNext())
+		  //System.out.println(it.next());
+	  
+	  // We didn't find a path :(
+	  if ( marked.get(end) == null )
+		  return null;
+	  
+	  ArrayList<Location> path = new ArrayList<Location>();
+	  
+	  Location loc = end;
+	  
+	  while ( distTo.get(loc) != 0 ) {
+		  path.add(loc);
+		  loc = edgeTo.get(loc);
+	  }
+	  
+	  return path;
+	  
+	  
   }
   
   // Location l is the location to analyze, Location p is the previous location
@@ -85,7 +164,7 @@ public class School extends CharMatrix
   private ArrayList<Location> computeShortestPath(Location l, Location p, 
 		  ArrayList<Location> a, ArrayList<Location> v)
   {
-	  if (goal == l)
+	  if (goal.equals(l))
 		  return a;
 	  else if (v.contains(l))
 		  return a;
