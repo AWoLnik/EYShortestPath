@@ -88,27 +88,37 @@ public class School extends CharMatrix
 	  else {
 		  ArrayList<ArrayList<Location>> paths = new ArrayList<ArrayList<Location>>();
 		  
+		  int bad = 0;
+		  
 		  // check North
 		  Location n = new Location(l.getRow()-1, l.getCol());
 		  if (n != p && !isEmpty(n.getRow(), n.getCol()))
 				  paths.add(computeShortestPath(n, l, a));
+		  else
+			  bad++;
 		  
 		  // check East
 		  Location e = new Location(l.getRow(), l.getCol()+1);
 		  if (e != p && !isEmpty(e.getRow(), e.getCol()))
 				  paths.add(computeShortestPath(e, l, a));
+		  else
+			  bad++;
 		  
 		  // check South
 		  Location s = new Location(l.getRow()+1, l.getCol());
 		  if (s != p && !isEmpty(s.getRow(), s.getCol()))
 				  paths.add(computeShortestPath(s, l, a));
+		  else
+			  bad++;
 		  
 		  // check West
 		  Location w = new Location(l.getRow(), l.getCol()-1);
 		  if (w != p && !isEmpty(w.getRow(), w.getCol()))
 				  paths.add(computeShortestPath(w, l, a));
+		  else
+			  bad++;
 		  
-		  if (n == p && e == p && s == p && w == p)
+		  if (bad == 4)
 			  return a;
 		  
 		  int shortestLength = paths.get(0).size();
