@@ -108,6 +108,9 @@ public class School extends CharMatrix
 		  if (w != p && !isEmpty(w.getRow(), w.getCol()))
 				  paths.add(computeShortestPath(w, l, a));
 		  
+		  if (n == p && e == p && s == p && w == p)
+			  return a;
+		  
 		  int shortestLength = paths.get(0).size();
 		  int shortestPath = 0;
 		  
