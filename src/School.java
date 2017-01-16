@@ -71,8 +71,9 @@ public class School extends CharMatrix
     
     if (selected.size() == 2) {
     	goal = selected.get(0);
-    	ArrayList<Location> a = new ArrayList<Location>();
-    	ArrayList<Location> shortestPath = computeShortestPath(l, l, a);
+    	ArrayList<Location> path = new ArrayList<Location>();
+    	ArrayList<Location> visitedNodes = new ArrayList<Location>();
+    	ArrayList<Location> shortestPath = computeShortestPath(l, l, path, visitedNodes);
     	for (Location p: shortestPath)
     		setCharAt(p.getRow(), p.getCol(), 'p');
     	school.update(this);
@@ -81,40 +82,44 @@ public class School extends CharMatrix
   
   // Location l is the location to analyze, Location p is the previous location
   // (which is to be avoided), and Location[] a is the path being built out
-  private ArrayList<Location> computeShortestPath(Location l, Location p, ArrayList<Location> a)
+  private ArrayList<Location> computeShortestPath(Location l, Location p, 
+		  ArrayList<Location> a, ArrayList<Location> v)
   {
 	  if (goal == l)
 		  return a;
+	  else if (v.contains(l))
+		  return a;
 	  else {
 		  ArrayList<ArrayList<Location>> paths = new ArrayList<ArrayList<Location>>();
+		  v.add(l);
 		  
 		  int bad = 0;
 		  
 		  // check North
 		  Location n = new Location(l.getRow()-1, l.getCol());
 		  if (n != p && !isEmpty(n.getRow(), n.getCol()))
-				  paths.add(computeShortestPath(n, l, a));
+				  paths.add(computeShortestPath(n, l, a, v));
 		  else
 			  bad++;
 		  
 		  // check East
 		  Location e = new Location(l.getRow(), l.getCol()+1);
 		  if (e != p && !isEmpty(e.getRow(), e.getCol()))
-				  paths.add(computeShortestPath(e, l, a));
+				  paths.add(computeShortestPath(e, l, a, v));
 		  else
 			  bad++;
 		  
 		  // check South
 		  Location s = new Location(l.getRow()+1, l.getCol());
 		  if (s != p && !isEmpty(s.getRow(), s.getCol()))
-				  paths.add(computeShortestPath(s, l, a));
+				  paths.add(computeShortestPath(s, l, a, v));
 		  else
 			  bad++;
 		  
 		  // check West
 		  Location w = new Location(l.getRow(), l.getCol()-1);
 		  if (w != p && !isEmpty(w.getRow(), w.getCol()))
-				  paths.add(computeShortestPath(w, l, a));
+				  paths.add(computeShortestPath(w, l, a, v));
 		  else
 			  bad++;
 		  
